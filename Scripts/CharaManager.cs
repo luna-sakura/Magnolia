@@ -3,52 +3,44 @@ using System.Collections;
 
 public class CharaManager : MonoBehaviour {
 
-	public GameObject Face1;
-	public GameObject Face2;
-	public GameObject Face3;
-	public GameObject Face4;
-	public GameObject Face5;
+	public GameObject[] Face;
 
-	public int num;
+	public static bool changeFlag;
+	public static bool destroyFlag;
+
+	public static int faceType;
+
+	[SerializeField] private int maxFace;
 
 	// Use this for initialization
 	void Start () {
-		Face1.SetActive (false);
-		Face2.SetActive (false);
-		Face3.SetActive (false);
-		Face4.SetActive (false);
-		Face5.SetActive (false);
-
-		FaceChange (num);
-
+		destroyFlag = false;
+		changeFlag = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (changeFlag == true) {
+			FaceChange (faceType);
+		}
+
+		if (destroyFlag == true) {
+			CharacterDestroy ();
+		}
+
 	}
 
 	public void FaceChange(int x) {
-		switch (x) {
-		case 1:
-			Face1.SetActive (true);
-			break;
-
-		case 2:
-			Face2.SetActive (true);
-			break;
-
-		case 3:
-			Face3.SetActive (true);
-			break;
-
-		case 4:
-			Face4.SetActive (true);
-			break;
-
-		case 5:
-			Face5.SetActive (true);
-			break;
+		for (int i = 0; i < maxFace; i++) {
+			Face [i].SetActive (false);
 		}
+
+		Face[x - 1].SetActive (true);
+		changeFlag = false;
 	}
+
+	void CharacterDestroy() {
+		Destroy (this.gameObject);
+	}
+
 }

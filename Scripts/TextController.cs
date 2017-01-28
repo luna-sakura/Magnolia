@@ -6,7 +6,10 @@ public class TextController : MonoBehaviour
 {
 	[Multiline] public string[] scenarios;
 	public string[] names;
-	public GameObject[] Character;
+
+	[SerializeField] private int[] characterFace;
+	[SerializeField] private int[] characterNum;
+	[SerializeField] private int[] background;
 
 	[SerializeField] Text uiText;
 	[SerializeField] Text nameText;
@@ -20,7 +23,6 @@ public class TextController : MonoBehaviour
 	private int currentLine = 0;
 	private int lastUpdateCharacter = -1;
 
-	CharaManager charaManager;
 
 	// 文字の表示が完了しているかどうか
 	public bool IsCompleteDisplayText 
@@ -31,8 +33,6 @@ public class TextController : MonoBehaviour
 	void Start()
 	{
 		SetNextLine();
-
-		charaManager = GetComponent<CharaManager>();
 	}
 
 	void Update () 
@@ -61,6 +61,23 @@ public class TextController : MonoBehaviour
 	{
 		currentText = scenarios[currentLine];
 		nameText.text = names[currentLine];
+
+		if ( characterFace[currentLine] != 0 && characterFace[currentLine] != CharaManager.faceType) {
+			CharaManager.faceType = characterFace[currentLine];
+			CharaManager.changeFlag = true;
+		}
+
+		if (characterNum[currentLine] != 0 && characterNum[currentLine] != CharaCreate.CharacterNumber) {
+			CharaCreate.CharacterNumber = characterNum[currentLine];
+			CharaManager.destroyFlag = true;
+			CharaCreate.createFlag = true;
+		}
+
+		if ( background[currentLine] != 0 && background[currentLine] != BackGroundManager.backgroundNum) {
+			BackGroundManager.backgroundNum = background[currentLine];
+			BackGroundManager.backgroundChange = true;
+		}
+			
 		timeUntilDisplay = currentText.Length * intervalForCharacterDisplay;
 		timeElapsed = Time.time;
 		currentLine ++;
