@@ -10,6 +10,7 @@ public class TextController : MonoBehaviour
 	[SerializeField] private int[] characterFace;
 	[SerializeField] private int[] characterNum;
 	[SerializeField] private int[] background;
+	[SerializeField] private bool[] noCharacter;
 
 	[SerializeField] Text uiText;
 	[SerializeField] Text nameText;
@@ -22,6 +23,7 @@ public class TextController : MonoBehaviour
 	private float timeElapsed = 1;
 	private int currentLine = 0;
 	private int lastUpdateCharacter = -1;
+	[SerializeField] private int nextGame;
 
 
 	// 文字の表示が完了しているかどうか
@@ -41,6 +43,18 @@ public class TextController : MonoBehaviour
 		if( IsCompleteDisplayText ){
 			if(currentLine < scenarios.Length && Input.GetMouseButtonDown(0)){
 				SetNextLine();
+			} else if(currentLine >= scenarios.Length && Input.GetMouseButtonDown(0)){
+
+				NumberReset ();
+
+				switch(nextGame) {
+				case 0:
+					Application.LoadLevel( "Main" );
+					break;
+				case 1:
+					Application.LoadLevel( "Title" );
+					break;
+				}
 			}
 		}else{
 			// 完了してないなら文字をすべて表示する
@@ -59,11 +73,12 @@ public class TextController : MonoBehaviour
 
 	void SetNextLine()
 	{
+
 		currentText = scenarios[currentLine];
 		nameText.text = names[currentLine];
 
-		if ( characterFace[currentLine] != 0 && characterFace[currentLine] != CharaManager.faceType) {
-			CharaManager.faceType = characterFace[currentLine];
+		if (characterFace [currentLine] != 0 && characterFace [currentLine] != CharaManager.faceType) {
+			CharaManager.faceType = characterFace [currentLine];
 			CharaManager.changeFlag = true;
 		}
 
@@ -71,6 +86,9 @@ public class TextController : MonoBehaviour
 			CharaCreate.CharacterNumber = characterNum[currentLine];
 			CharaManager.destroyFlag = true;
 			CharaCreate.createFlag = true;
+		} else if ( noCharacter[currentLine] == true ) {
+			CharaManager.destroyFlag = true;
+			CharaCreate.CharacterNumber = 0;
 		}
 
 		if ( background[currentLine] != 0 && background[currentLine] != BackGroundManager.backgroundNum) {
@@ -83,4 +101,11 @@ public class TextController : MonoBehaviour
 		currentLine ++;
 		lastUpdateCharacter = -1;
 	}
+
+	void NumberReset() {
+		CharaManager.faceType = 0;
+		CharaCreate.CharacterNumber = 0;
+		BackGroundManager.backgroundNum = 0;
+	}
+
 }
